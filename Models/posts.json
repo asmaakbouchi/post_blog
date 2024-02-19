@@ -59,6 +59,18 @@
         "IT",
         "Technologie"
       ]
+    },
+    {
+      "id": 6,
+      "titre": "Consultation ",
+      "auteur": "SAfaa rahom",
+      "date": "2024-02-03",
+      "contenu": "Bienvenu chez notre service de support it  ... .",
+      "tags": [
+        "Support",
+        "IT",
+        "Technologie"
+      ]
     }
   ]
 }

@@ -10,13 +10,15 @@ router.use((req,res,next)=>{
     next();
 })
 
-
- router.get("/", authMiddleware, userController.getAllUsers);
-
+router.get("/", authMiddleware, userController.getAllUsers);
 router.post("/login", userController.login);
 router.post("/register", userController.register);
+router.get("/profil",authMiddleware,userController.profil);
+router.get("/:id",userController.findUserid);
 
 router.use((err, req, res, next) => {
     res.status(500).send(err.message);
  });
+
+
 module.exports = router;

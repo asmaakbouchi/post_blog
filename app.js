@@ -1,22 +1,22 @@
 const express=require("express");
 const app=express();
-{}
-const port=3000
+const mongoose=require("mongoose");
+require('dotenv').config();
+const routerpost=require("./Routes/postRoutes");
+const routeruser=require("./Routes/userRoutes");
+const uri=process.env.uri
+const port=process.env.port
+mongoose.connect(uri).then(()=>console.log("Connecter database")).catch((err)=>console.log(err));
 
 app.use(express.json());
-
-const routerpost=require("./Routes/postRoutes");
 app.use("/posts",routerpost);
-
-const routeruser=require("./Routes/userRoutes");
 app.use("/users",routeruser);
-
-
-// middleware gestion des erreur 
+  
 app.use((req, res) => {
     res.status(404).send(`La page n'existe pas`);
 });
 
+// middleware gestion des erreur
 app.use((err, req, res, next) => {
     if (err.status === 400) {
         res.status(400).send("Le Syntaxe de fichier json incorrecte");

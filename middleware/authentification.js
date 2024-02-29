@@ -11,7 +11,7 @@ const auth = (req, res, next) => {
 
     jwt.verify(token, "tokenkey",(err,data)=>{
         if(err){res.status(401).json(err.message)}
-        req.data =data
+        req.data = data
     });
     
      

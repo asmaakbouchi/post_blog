@@ -1,13 +1,15 @@
 const express=require("express");
 const app=express();
+{}
 const port=3000
 
 app.use(express.json());
 
-
-
 const routerpost=require("./Routes/postRoutes");
 app.use("/posts",routerpost);
+
+const routeruser=require("./Routes/userRoutes");
+app.use("/users",routeruser);
 
 
 // middleware gestion des erreur 

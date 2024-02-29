@@ -57,8 +57,6 @@ const delete_PostById=(id)=>{
     else{ return false;}
 }
 
-
-
 const savedata= async(data)=> {
     try{
       const posts= await data;

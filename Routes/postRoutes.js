@@ -17,8 +17,6 @@ router.put("/:id",controller.updatePost)
 router.delete("/:id",controller.deletePostById)
 
 
-
-
 router.use((err, req, res, next) => {
     res.status(500).send(err.message);
  });

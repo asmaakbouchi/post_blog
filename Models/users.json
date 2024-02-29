@@ -1,0 +1,18 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "asmaa",
+      "password": "asmaa123",
+      "email": "asmaa@gmail.com",
+      "age": 20
+    },
+    {
+      "id": 6,
+      "username": "sara",
+      "password": "$2b$10$haVGx/QNhzhhuZJfrHs.aOaE9Tvisv/tEv7fIKtS9G5A6Qwb3yVsO",
+      "email": "sara@gmail.com",
+      "age": 20
+    }
+  ]
+}

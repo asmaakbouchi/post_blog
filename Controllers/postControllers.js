@@ -1,5 +1,8 @@
 const model=require("../Models/poste")
 
+
+
+
 const getAllPosts=(req,res)=>{
     const post=model.get_AllPosts();
     res.json(post);
@@ -29,7 +32,6 @@ const updatePost=(req,res)=>{
       res.json(post);
     }
     else{ res.send(`le Post n'existe pas avec L'id ${id}`);}
-  
 }
 
 const deletePostById = (req, res) => {
@@ -42,5 +44,7 @@ const deletePostById = (req, res) => {
     res.send(`le Post n'existe pas avec l'id ${id}`);
   }  
 };
+
+
 
 module.exports={getAllPosts,getPostById,createPost,updatePost,deletePostById}

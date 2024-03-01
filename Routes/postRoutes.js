@@ -1,6 +1,7 @@
 const express=require("express");
 const router=express.Router();
 const controller=require("../Controllers/postControllers");
+const authMiddleware = require("../middleware/authentification");
 
 router.use((req,res,next)=>{
     const date=new Date();
@@ -10,11 +11,11 @@ router.use((req,res,next)=>{
 })
 
 
-router.get("/",controller.getAllPosts)
-router.post("/",controller.createPost)
-router.get("/:id",controller.getPostById)
-router.put("/:id",controller.updatePost)
-router.delete("/:id",controller.deletePostById)
+router.get("/",authMiddleware,controller.getAllPosts)
+router.post("/",authMiddleware,controller.createPost)
+router.get("/:id",authMiddleware,controller.getPostById)
+router.put("/:id",authMiddleware,controller.updatePost)
+router.delete("/:id",authMiddleware,controller.deletePostById)
 
 
 router.use((err, req, res, next) => {

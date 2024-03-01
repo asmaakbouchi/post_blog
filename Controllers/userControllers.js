@@ -27,8 +27,8 @@ const getAllUsers = async (req, res) => {
 
 const findUserid=async(req,res)=>{
 const iduser=req.params.id;
-const user=await modeluser.findOne({id:iduser});
-if(!user){ return res.status(404).send("L'utilisateur innexiste");}
+const user=await modeluser.findById(iduser);
+if(!user){ return res.status(404).json({message: "L'utilisateur n'existe pas"});}
 res.status(200).json(user);
 }
 
@@ -72,6 +72,45 @@ const register = async (req, res) => {
     }
   };
 
+  const updateUser=async(req,res)=>{
+    try{
+      const {name, email, age } = req.body;
+      const id=req.params.id;
+      const newuser={
+        name:name,email:email,age:age,updatedAt:Date.now()
+      }
+      const user=await modeluser.findByIdAndUpdate(id,newuser,{new:true})
+      if(!user){
+        res.status(404).json({message:`l'utilisateur avec l'id ${id} n'existe pas`});
+      }
+      res.status(200).json({message:" l'utilisateur est modifier avec succées", utilisateur : user})
+    }
+    catch(err){
+      console.log(err);
+      if (err.name === 'CastError' && err.kind === 'ObjectId') {
+        return res.status(400).json({ message: "Format d'ID invalide" });
+      }
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
+  const deleteUser=async(req,res)=>{
+    try{
+      const id=req.params.id;
+      const user= await modeluser.findByIdAndDelete(id)
+      if(!user){
+        res.status(404).json({message:`l'utilisateur avec l'id ${id} n'existe pas`});
+      }
+      res.status(200).json({message:" l'utilisateur est supprimé avec succées"})
+    }
+    catch(err){
+      console.log(err);
+      if (err.name === 'CastError' && err.kind === 'ObjectId') {
+        return res.status(400).json({ message: "Format d'ID invalide" });
+      }
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
 
   
 
@@ -102,4 +141,4 @@ const login =(req, res) => {
 }
 */
 
-module.exports = { getAllUsers, login, register,findUserid,profil}; 
+module.exports = { getAllUsers, login, register,findUserid,profil,updateUser,deleteUser}; 

@@ -14,7 +14,11 @@ router.get("/", authMiddleware, userController.getAllUsers);
 router.post("/login", userController.login);
 router.post("/register", userController.register);
 router.get("/profil",authMiddleware,userController.profil);
-router.get("/:id",userController.findUserid);
+router.get("/:id",authMiddleware,userController.findUserid);
+router.put("/:id",authMiddleware,userController.updateUser);
+router.delete("/:id",authMiddleware,userController.deleteUser);
+
+
 
 router.use((err, req, res, next) => {
     res.status(500).send(err.message);

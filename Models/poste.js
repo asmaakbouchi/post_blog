@@ -1,7 +1,7 @@
 const mongoose =require("mongoose");
 const PostsSchema=({
     titre:{type:String, required: true},
-    auteur:{type:String}, 
+    auteur: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
     contenu:{type:String},
     date:{type:Date},
     tags:[{type:String}],

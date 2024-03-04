@@ -5,9 +5,9 @@ const bcrypt=require("bcrypt");
 const profil=async(req,res)=>{
   const emailconnected=req.data.email;
   const user=await modeluser.findOne({email:emailconnected})
-  const {email,age,name,createdAt}=user
+  const {email,name,createdAt}=user
   res.send(`Bienvenu ${name} dans votre espace utilisateur vous voila vos informtion : \n
-  Nom:${name} \n Email: ${email} \n Age: ${age} \n Date creation du compte: ${createdAt}`)
+  Nom:${name} \n Email: ${email}\n Date creation du compte: ${createdAt}`)
 }
 
 const getAllUsers = async (req, res) => {
@@ -22,9 +22,8 @@ const getAllUsers = async (req, res) => {
       console.error(err);
       res.status(500).json({ message: "Internal Server Error" });
     }
-  };
+};
   
-
 const findUserid=async(req,res)=>{
 const iduser=req.params.id;
 const user=await modeluser.findById(iduser);
@@ -43,15 +42,13 @@ const login = async (req, res) => {
       if (!passwordMatch) {
         return res.status(401).send("Le mot de passe est incorrect");
       }
-      const token = jwt.sign({ email: user.email }, "tokenkey", { expiresIn: "1h" });
+      const token = jwt.sign({_id:user._id,email: user.email, role:user.role }, "tokenkey", { expiresIn: "1h" });
       res.status(200).json({ message: `Bien connecté`, token });
-
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Internal Server Error" });
     }
   };
-  
 
 const register = async (req, res) => {
     try {
@@ -62,7 +59,8 @@ const register = async (req, res) => {
         password: hash,
         email: email,
         age: age,
-        createdAt : Date.now()
+        createdAt : Date.now(),
+        role:'user'
       };
       const user = await modeluser.create(newuser);
       res.status(200).json({ message: "Inscription avec succès", user });
@@ -72,12 +70,32 @@ const register = async (req, res) => {
     }
   };
 
+  const creatUser=async (req, res) => {
+    try {
+      const {name, password, email, age,role} = req.body;
+      const hash = await bcrypt.hash(password, 10);
+      const newuser = {
+        name: name,
+        password: hash,
+        email: email,
+        age: age,
+        createdAt : Date.now(),
+        role:role
+      };
+      const user = await modeluser.create(newuser);
+      res.status(200).json({ message: " Ajouter user avec succès", user });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+
   const updateUser=async(req,res)=>{
     try{
-      const {name, email, age } = req.body;
+      const {name, email, role} = req.body;
       const id=req.params.id;
       const newuser={
-        name:name,email:email,age:age,updatedAt:Date.now()
+        name:name,email:email,role:role,updatedAt:Date.now()
       }
       const user=await modeluser.findByIdAndUpdate(id,newuser,{new:true})
       if(!user){
@@ -94,14 +112,16 @@ const register = async (req, res) => {
     }
   }
 
+
   const deleteUser=async(req,res)=>{
     try{
       const id=req.params.id;
       const user= await modeluser.findByIdAndDelete(id)
-      if(!user){
-        res.status(404).json({message:`l'utilisateur avec l'id ${id} n'existe pas`});
+      if(user){
+       res.status(200).json({message:" l'utilisateur est supprimé avec succées"})
       }
-      res.status(200).json({message:" l'utilisateur est supprimé avec succées"})
+      res.status(404).json({message:`l'utilisateur avec l'id ${id} n'existe pas`});
+      
     }
     catch(err){
       console.log(err);
@@ -112,33 +132,5 @@ const register = async (req, res) => {
     }
   }
 
-  
 
-
-
-
-/*
-const getAllUsers = (req, res) => { 
-    const users = model.find();
-    res.json({message:`you are admin in email ${req.data.email} \n ths is list of users :`,user:users});   
-}
-
-const register=(req,res)=>{
-    model.register(req.body);
-    res.status(200).json(`ajouter avec succées `);
-}
-
-const login =(req, res) => {
-    const user = model.findUser(req.body)
-    if(user===0) return res.status(401).send("le nom d'utilisateur incorrect");
-    if(user===1) return res.status(401).send("le mot de passe incorrect")
-    console.log(user);
-
-    const token = jwt.sign({email: user.email }, "tokenkey", { expiresIn: "1h" });
-
-    res.status(200).json({ message: "Bien connecté", token });
-    
-}
-*/
-
-module.exports = { getAllUsers, login, register,findUserid,profil,updateUser,deleteUser}; 
+module.exports = { getAllUsers, login, register,findUserid,profil,updateUser,deleteUser,creatUser}; 

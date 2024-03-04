@@ -10,11 +10,10 @@ const getAllPosts = async (req, res) => {
   }
 };
 
-const getPostById = async (req, res) => {
+const getPostById = async (req, res) => { 
   try {
     const postId = req.params.id;
     const post = await model.findById(postId);
-
     if (!post) {
       return res.status(404).json({ message: "Le post n'existe pas" });
     }
@@ -29,11 +28,12 @@ const getPostById = async (req, res) => {
 };
 
 const createPost = async (req, res) => {
+  const idauteur=req.data._id
   try {
     const newPost = {
       titre: req.body.titre,
       date: Date.now(),
-      auteur: req.body.auteur,
+      auteur: idauteur,
       tags: req.body.tags,
       contenu: req.body.contenu,
     };
@@ -57,7 +57,6 @@ const updatePost = async (req, res) => {
       {
         $set: {
           titre: req.body.titre,
-          auteur: req.body.auteur,
           tags: req.body.tags,
           contenu: req.body.contenu,
           updatedAt: Date.now(),

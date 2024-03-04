@@ -2,6 +2,10 @@ const express=require("express");
 const router=express.Router();
 const controller=require("../Controllers/postControllers");
 const authMiddleware = require("../middleware/authentification");
+const isCreator = require("../middleware/auth&admin");
+const isAdmin = require("../middleware/accessAdmin");
+
+
 
 router.use((req,res,next)=>{
     const date=new Date();
@@ -10,16 +14,15 @@ router.use((req,res,next)=>{
     next();
 })
 
-
 router.get("/",authMiddleware,controller.getAllPosts)
 router.post("/",authMiddleware,controller.createPost)
 router.get("/:id",authMiddleware,controller.getPostById)
-router.put("/:id",authMiddleware,controller.updatePost)
-router.delete("/:id",authMiddleware,controller.deletePostById)
-
+router.put("/:id",authMiddleware,isCreator,controller.updatePost)
+router.delete("/:id",authMiddleware,isCreator,controller.deletePostById)
 
 router.use((err, req, res, next) => {
     res.status(500).send(err.message);
- });
+ }); 
 
-module.exports=router
+
+module.exports=router 

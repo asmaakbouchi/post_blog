@@ -8,6 +8,9 @@ const uri=process.env.uri
 const port=process.env.port
 mongoose.connect(uri).then(()=>console.log("Connecter database")).catch((err)=>console.log(err));
 
+const cors=require('cors');
+app.use(cors());
+
 app.use(express.json());
 app.use("/posts",routerpost);
 app.use("/users",routeruser);

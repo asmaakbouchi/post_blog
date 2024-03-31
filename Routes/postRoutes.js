@@ -14,7 +14,7 @@ router.use((req,res,next)=>{
     next();
 })
 
-router.get("/",authMiddleware,controller.getAllPosts)
+router.get("/",controller.getAllPosts)
 router.post("/",authMiddleware,controller.createPost)
 router.get("/:id",authMiddleware,controller.getPostById)
 router.put("/:id",authMiddleware,isCreator,controller.updatePost)

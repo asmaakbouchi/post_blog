@@ -14,9 +14,9 @@ router.use((req,res,next)=>{
 
 router.post("/add",isAdmin,userController.creatUser);
 router.post("/login", userController.login);
-router.post("/register", userController.register);
+router.post("/signup", userController.register);
 
-router.get("/",authMiddleware,isAdmin,userController.getAllUsers);
+router.get("/",userController.getAllUsers);
 router.get("/profil",authMiddleware,userController.profil);
 router.get("/:id",authMiddleware,userController.findUserid);
 

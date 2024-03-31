@@ -27,7 +27,8 @@ const getAllUsers = async (req, res) => {
 const findUserid=async(req,res)=>{
 const iduser=req.params.id;
 const user=await modeluser.findById(iduser);
-if(!user){ return res.status(404).json({message: "L'utilisateur n'existe pas"});}
+if(!user)
+{ return res.status(404).json({message: "L'utilisateur n'existe pas"});}
 res.status(200).json(user);
 }
 
@@ -48,7 +49,7 @@ const login = async (req, res) => {
       console.error(err);
       res.status(500).json({ message: "Internal Server Error" });
     }
-  };
+};
 
 const register = async (req, res) => {
     try {

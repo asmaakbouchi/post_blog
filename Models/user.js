@@ -1,4 +1,5 @@
 const mongoose =require("mongoose");
+
 const usersSchema=({
     name:{type:String, required: true},
     password:{type:String, required: true}, 

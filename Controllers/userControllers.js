@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt=require("bcrypt");
 
 const profil=async(req,res)=>{
-  const emailconnected=req.data.email;
+  const emailconnected=req.user.email;
   const user=await modeluser.findOne({email:emailconnected})
   const {email,name,createdAt}=user
   res.send(`Bienvenu ${name} dans votre espace utilisateur vous voila vos informtion : \n
@@ -43,13 +43,14 @@ const login = async (req, res) => {
       if (!passwordMatch) {
         return res.status(401).send("Le mot de passe est incorrect");
       }
-      const token = jwt.sign({_id:user._id,email: user.email, role:user.role }, "tokenkey", { expiresIn: "1h" });
+      const token = jwt.sign({_id:user._id,email: user.email, role:user.role }, "tokenkey", { expiresIn: "1d" });
       res.status(200).json({ message: `Bien connecté`, token });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
 
 const register = async (req, res) => {
     try {

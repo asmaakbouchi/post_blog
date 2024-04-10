@@ -1,5 +1,6 @@
 const model = require("../Models/poste");
 
+
 const getAllPosts = async (req, res) => {
   try {
     const posts = await model.find();
@@ -28,20 +29,22 @@ const getPostById = async (req, res) => {
 };
 
 const createPost = async (req, res) => {
-  const idauteur=req.data._id
   try {
+    const idauteur = req.user._id; 
+    const img=req.file.path
+  // const uploadImage = await cloudinary.uploader.upload(img)
+
     const newPost = {
       titre: req.body.titre,
       date: Date.now(),
       auteur: idauteur,
-      tags: req.body.tags,
+      image:img,
       contenu: req.body.contenu,
     };
     await model.create(newPost);
     res.send('Le post est ajouté avec succès');
   } catch (err) {
     console.error(err);
-
     if (err.name === 'CastError' && err.kind === 'ObjectId') {
       return res.status(400).json({ message: "Format d'ID invalide" });
     }
@@ -49,19 +52,28 @@ const createPost = async (req, res) => {
   }
 };
 
-const updatePost = async (req, res) => {
+const updatePost  = async (req, res) => {
   try {
     const idPost = req.params.id;
+    const img=req.body.image
+    
+    let updatedImage;
+    if (req.body.image) {
+      updatedImage = await cloudinary.uploader.upload(img)
+    }
+    const updatedFields = {
+      titre: req.body.titre,
+      contenu: req.body.contenu,
+      updatedAt: Date.now(),
+    };
+
+    if (updatedImage) {
+      updatedFields.image = updatedImage.secure_url;
+    }
+
     const updatedPost = await model.findByIdAndUpdate(
       idPost,
-      {
-        $set: {
-          titre: req.body.titre,
-          tags: req.body.tags,
-          contenu: req.body.contenu,
-          updatedAt: Date.now(),
-        },
-      },
+      { $set: updatedFields },
       { new: true }
     );
 
@@ -69,10 +81,9 @@ const updatePost = async (req, res) => {
       return res.status(404).json({ message: "Post n'existe pas" });
     }
 
-    res.json({ message: "Post modifier avec succées", post: updatedPost });
+    res.json({ message: "Post modifié avec succès", post: updatedPost });
   } catch (err) {
     console.error(err);
-
     if (err.name === 'CastError' && err.kind === 'ObjectId') {
       return res.status(400).json({ message: "Format d'ID invalide" });
     }

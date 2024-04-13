@@ -8,8 +8,11 @@ try{
     if(!post){res.status(404).json({message:"le post n'existe pas"})}
     if(req.user.role==="admin" || req.user._id == post.auteur)
     { return next();  }
-    else{res.status(403).json({message:"Accées limité"})}
-    console.log(`id1 : ${id} \n id2: ${post.auteur}`)
+    else{ 
+        console.log(`authentificat : ${id} \n creator: ${post.auteur}`)
+        return res.status(403).json({message:"Accées limité"})
+    }
+   
 }
 catch(err){
     console.log(err);

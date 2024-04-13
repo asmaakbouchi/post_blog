@@ -32,8 +32,6 @@ const createPost = async (req, res) => {
   try {
     const idauteur = req.user._id; 
     const img=req.file.path
-  // const uploadImage = await cloudinary.uploader.upload(img)
-
     const newPost = {
       titre: req.body.titre,
       date: Date.now(),
@@ -42,7 +40,7 @@ const createPost = async (req, res) => {
       contenu: req.body.contenu,
     };
     await model.create(newPost);
-    res.send('Le post est ajouté avec succès');
+    res.status(201).json({ message: "Le post est ajouté avec succès" });
   } catch (err) {
     console.error(err);
     if (err.name === 'CastError' && err.kind === 'ObjectId') {
@@ -52,23 +50,20 @@ const createPost = async (req, res) => {
   }
 };
 
-const updatePost  = async (req, res) => {
+const updatePost = async (req, res) => {
   try {
     const idPost = req.params.id;
-    const img=req.body.image
-    
-    let updatedImage;
-    if (req.body.image) {
-      updatedImage = await cloudinary.uploader.upload(img)
-    }
+    const img = req.file ? req.file.path : null; // Check if an image is provided
+    const { titre, contenu } = req.body; // Extract fields from req.body
+
     const updatedFields = {
-      titre: req.body.titre,
-      contenu: req.body.contenu,
+      titre,
+      contenu,
       updatedAt: Date.now(),
     };
 
-    if (updatedImage) {
-      updatedFields.image = updatedImage.secure_url;
+    if (img) {
+      updatedFields.image = img;
     }
 
     const updatedPost = await model.findByIdAndUpdate(
@@ -81,15 +76,16 @@ const updatePost  = async (req, res) => {
       return res.status(404).json({ message: "Post n'existe pas" });
     }
 
-    res.json({ message: "Post modifié avec succès", post: updatedPost });
+    res.status(200).json({ message: "Post modifié avec succès", post: updatedPost });
   } catch (err) {
     console.error(err);
     if (err.name === 'CastError' && err.kind === 'ObjectId') {
       return res.status(400).json({ message: "Format d'ID invalide" });
     }
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Erreur interne du serveur" });
   }
 };
+
 
 const deletePostById = async (req, res) => {
   try {
@@ -98,7 +94,6 @@ const deletePostById = async (req, res) => {
     if (result.deletedCount === 0) {
       return res.status(404).json({ message: "Post n'existe pas " });
     }
-
     res.status(200).json({ message: "Post deleted successfully" });
   } catch (err) {
     console.error(err);

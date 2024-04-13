@@ -44,7 +44,10 @@ const login = async (req, res) => {
         return res.status(401).send("Le mot de passe est incorrect");
       }
       const token = jwt.sign({_id:user._id,email: user.email, role:user.role }, "tokenkey", { expiresIn: "1d" });
-      res.status(200).json({ message: `Bien connecté`, token });
+      const {password:pass,...rest}=user._doc
+      
+      res.status(200).cookie('access_token',token,{httpOnly:true}).json({user :rest,token: token});
+      
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Internal Server Error" });

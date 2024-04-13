@@ -10,9 +10,11 @@ const upload = require('../utils/coudinary');
 router.use(log_date);   
 
 router.get("/", controller.getAllPosts);
+router.get("/:id", controller.getPostById);
+
 router.post("/", upload.single('image'),authMiddleware, controller.createPost);
-router.get("/:id", authMiddleware, controller.getPostById);
-router.put("/:id", authMiddleware, isCreator, controller.updatePost);
+
+router.put("/:id",upload.single('image'), authMiddleware, isCreator, controller.updatePost);
 router.delete("/:id", authMiddleware, isCreator, controller.deletePostById);
 
 router.use((err, req, res, next) => {

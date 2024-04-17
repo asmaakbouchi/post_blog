@@ -3,11 +3,14 @@ const jwt = require("jsonwebtoken");
 const bcrypt=require("bcrypt");
 
 const profil=async(req,res)=>{
-  const emailconnected=req.user.email;
-  const user=await modeluser.findOne({email:emailconnected})
-  const {email,name,createdAt}=user
-  res.send(`Bienvenu ${name} dans votre espace utilisateur vous voila vos informtion : \n
-  Nom:${name} \n Email: ${email}\n Date creation du compte: ${createdAt}`)
+  const id_connected=req.user._id;
+  const user=await modeluser.findOne({_id:id_connected});
+  const {password:pass,...rest}=user._doc //pour ne pas afficher la password 
+  res.status(200).json(rest);
+ 
+
+  // res.send(`Bienvenu ${name} dans votre espace utilisateur vous voila vos informtion : \n
+  // Nom:${name} \n Email: ${email}\n Date creation du compte: ${createdAt}`)
 }
 
 const getAllUsers = async (req, res) => {
@@ -17,7 +20,7 @@ const getAllUsers = async (req, res) => {
         return res.status(404).json({ message: "Aucun utilisateur trouvé" });
       }
       res.status(200).json(users);
-      console.log('Email', req.data.email);
+      //console.log('Email', req.user.email);
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Internal Server Error" });
@@ -45,9 +48,9 @@ const login = async (req, res) => {
       }
       const token = jwt.sign({_id:user._id,email: user.email, role:user.role }, "tokenkey", { expiresIn: "1d" });
       const {password:pass,...rest}=user._doc
+
       
-      res.status(200).cookie('access_token',token,{httpOnly:true}).json({user :rest,token: token});
-      
+      res.status(200).cookie('access_token',token,{httpOnly:true}).json({user :rest,token: token})
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Internal Server Error" });

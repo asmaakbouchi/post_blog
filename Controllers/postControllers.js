@@ -3,7 +3,7 @@ const model = require("../Models/poste");
 
 const getAllPosts = async (req, res) => {
   try {
-    const posts = await model.find();
+    const posts = await model.find().populate('auteur','name'); //populate about affiche derictly the name of user instead of id 
     res.json(posts);
   } catch (err) {
     console.error(err);
@@ -14,7 +14,7 @@ const getAllPosts = async (req, res) => {
 const getPostById = async (req, res) => { 
   try {
     const postId = req.params.id;
-    const post = await model.findById(postId);
+    const post = await model.findById(postId).populate('auteur','name'); // Populate author field with only the 'name' property
     if (!post) {
       return res.status(404).json({ message: "Le post n'existe pas" });
     }
